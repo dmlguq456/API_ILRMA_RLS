@@ -93,15 +93,13 @@ ILRMA::ILRMA()
 	for (i = 0; i < Nch; i++)
 	{
 		lambda[i] = new double[nfreq];
-		for (k = 0; k < nfreq; k++)
+	}
+	for (i = 0; i < Nch; i++)
+	{
+		for (j = 0; j < nfreq; j++)
 		{
-			lambda[i][k] = 0.0;
-			for (j = 0; j < Nrank; j++)
-			{
-				lambda[i][k] += V_nmf[i][j] * T_nmf[i][j][k];
-			}
+			lambda[i][j] = 1.0;
 		}
-
 	}
 	invWDE = new double *[Nch]; // Nch X Nfreq(Complex)
 	for (i = 0; i < Nch; i++)
@@ -487,6 +485,14 @@ void ILRMA::ILRMA_lemma(double **input, int frameInd, double **output)
 	// update bases frame by frame
 	for (i = 0; i < Nch; i++)
 	{
+		for (k = 0; k < nfreq; k++)
+		{
+			lambda[i][k] = 0.0;
+			for (j = 0; j < Nrank; j++)
+			{
+				lambda[i][k] += V_nmf[i][j] * T_nmf[i][j][k];
+			}
+		}
 		for (j = 0; j < Nrank; j++)
 		{
 			double Numer_V = 0.0;
