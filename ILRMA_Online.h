@@ -1,6 +1,5 @@
 #define Nch			3
 #define nWin		2048
-#define Nrank		2
 #define BufferSize		512
 #define SamplingFreq	16000
 
@@ -12,8 +11,10 @@ private:
 	int nshift;
 	int nol;
 	int nfreq;
+	int Nrank;
 	double epsi;
 	double f_alpha;
+	double f_alpha2;
 
 	double *win_STFT;
 	double **X; // Nch X Nfreq(Complex)

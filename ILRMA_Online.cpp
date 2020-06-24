@@ -13,6 +13,8 @@ ILRMA::ILRMA()
 	//epsi = 0.000001;
 	epsi = 2.220446049250313*1E-16;
 	f_alpha = 0.98;
+	f_alpha2 = 0.9;
+	Nrank = 5;
 	double max = 32767;
 
 	int i, j, k, freq, ch;
@@ -516,16 +518,35 @@ void ILRMA::ILRMA_lemma(double **input, int frameInd, double **output)
 				lambda[i][k] += V_nmf[i][j] * T_nmf[i][j][k];
 			}
 		}
-		for (k = 0; k < nfreq; k++)
+		if (frameInd == 3)
 		{
-			for (j = 0; j < Nrank; j++)
+			for (k = 0; k < nfreq; k++)
 			{
-				A_T_nmf[i][j][k] = f_alpha * A_T_nmf[i][j][k] + (T_nmf[i][j][k]*T_nmf[i][j][k]) * Pwr[i][k] * V_nmf[i][j] / (lambda[i][k]*lambda[i][k]);
-				B_T_nmf[i][j][k] = f_alpha * B_T_nmf[i][j][k] + V_nmf[i][j] / (lambda[i][k]);
-				T_nmf[i][j][k] = sqrt(A_T_nmf[i][j][k] / B_T_nmf[i][j][k]);
-				if (T_nmf[i][j][k] < epsi)
+				for (j = 0; j < Nrank; j++)
 				{
-					T_nmf[i][j][k] = epsi;
+					A_T_nmf[i][j][k] = (T_nmf[i][j][k] * T_nmf[i][j][k]) * Pwr[i][k] * V_nmf[i][j] / (lambda[i][k] * lambda[i][k]);
+					B_T_nmf[i][j][k] = V_nmf[i][j] / (lambda[i][k]);
+					T_nmf[i][j][k] = sqrt(A_T_nmf[i][j][k] / B_T_nmf[i][j][k]);
+					if (T_nmf[i][j][k] < epsi)
+					{
+						T_nmf[i][j][k] = epsi;
+					}
+				}
+			}
+		}
+		else
+		{
+			for (k = 0; k < nfreq; k++)
+			{
+				for (j = 0; j < Nrank; j++)
+				{
+					A_T_nmf[i][j][k] = f_alpha2 * A_T_nmf[i][j][k] + (1 - f_alpha2) * (T_nmf[i][j][k] * T_nmf[i][j][k]) * Pwr[i][k] * V_nmf[i][j] / (lambda[i][k] * lambda[i][k]);
+					B_T_nmf[i][j][k] = f_alpha2 * B_T_nmf[i][j][k] + (1 - f_alpha2) * V_nmf[i][j] / (lambda[i][k]);
+					T_nmf[i][j][k] = sqrt(A_T_nmf[i][j][k] / B_T_nmf[i][j][k]);
+					if (T_nmf[i][j][k] < epsi)
+					{
+						T_nmf[i][j][k] = epsi;
+					}
 				}
 			}
 		}
@@ -546,14 +567,6 @@ void ILRMA::ILRMA_lemma(double **input, int frameInd, double **output)
 		{
 			for (freqInd = 0; freqInd < nfreq; freqInd++)
 			{
-				for (channel = 0; channel < Nch; channel++)
-				{
-					X_r[channel][freqInd*2] = X[channel][freqInd*2] / lambda[ch][freqInd];
-					X_r[channel][freqInd*2+1] = X[channel][freqInd*2+1] / lambda[ch][freqInd];
-				}
-			}
-			for (freqInd = 0; freqInd < nfreq; freqInd++)
-			{
 				re = freqInd + freqInd;
 				im = re + 1;
 				// Calculate V
@@ -561,8 +574,8 @@ void ILRMA::ILRMA_lemma(double **input, int frameInd, double **output)
 				{
 					for (ch2 = 0; ch2 < Nch; ch2++)
 					{
-						V[ch1][ch2][re][ch] = X_r[ch1][re] * X[ch2][re] + X_r[ch1][im] * X[ch2][im];
-						V[ch1][ch2][im][ch] = X_r[ch1][im] * X[ch2][re] - X_r[ch1][re] * X[ch2][im];
+						V[ch1][ch2][re][ch] = (X[ch1][re] * X[ch2][re] + X[ch1][im] * X[ch2][im]) / lambda[ch][freqInd];
+						V[ch1][ch2][im][ch] = (X[ch1][im] * X[ch2][re] - X[ch1][re] * X[ch2][im]) / lambda[ch][freqInd];
 					}
 				}
 				// Calculate diag_WV
@@ -667,8 +680,16 @@ void ILRMA::ILRMA_lemma(double **input, int frameInd, double **output)
 					Unumer[re] = 1E-6;
 					Unumer[im] = 0.0;
 				}
-
-				//Calculate U
+				// Calculate V
+				for (ch1 = 0; ch1 < Nch; ch1++)
+				{
+					for (ch2 = 0; ch2 < Nch; ch2++)
+					{
+						V[ch1][ch2][re][ch] = f_alpha * V[ch1][ch2][re][ch] + p[ch][freqInd] * ( X[ch1][re] * X[ch2][re] + X[ch1][im] * X[ch2][im] );
+						V[ch1][ch2][im][ch] = f_alpha * V[ch1][ch2][im][ch] + p[ch][freqInd] * ( X[ch1][im] * X[ch2][re] - X[ch1][re] * X[ch2][im] );
+					}
+				}
+				// Calculate U
 				for (ch1 = 0; ch1 < Nch; ch1++)
 				{
 					for (ch2 = 0; ch2 < Nch; ch2++)
