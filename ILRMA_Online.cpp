@@ -12,9 +12,9 @@ ILRMA::ILRMA()
 	nfreq = nfft / 2 + 1;
 	//epsi = 0.000001;
 	epsi = 2.220446049250313*1E-16;
-	f_alpha = 0.98;
-	f_alpha2 = 0.9;
-	Nrank = 5;
+	f_alpha = 0.96;
+	f_alpha2 = 0.95;
+	Nrank = 2;
 	double max = 32767;
 
 	int i, j, k, freq, ch;
@@ -548,6 +548,29 @@ void ILRMA::ILRMA_lemma(double **input, int frameInd, double **output)
 						T_nmf[i][j][k] = epsi;
 					}
 				}
+			}
+		}
+		for (k = 0; k < nfreq; k++)
+		{
+			lambda[i][k] = 0.0;
+			for (j = 0; j < Nrank; j++)
+			{
+				lambda[i][k] += V_nmf[i][j] * T_nmf[i][j][k];
+			}
+		}
+		for (j = 0; j < Nrank; j++)
+		{
+			double Numer_V = 0.0;
+			double Denom_V = 0.0;
+			for (k = 0; k < nfreq; k++)
+			{
+				Numer_V += Pwr[i][k] * T_nmf[i][j][k] / (lambda[i][k] * lambda[i][k]);
+				Denom_V += T_nmf[i][j][k] / (lambda[i][k]);
+			}
+			V_nmf[i][j] = V_nmf[i][j] * sqrt(Numer_V / Denom_V);
+			if (V_nmf[i][j] < epsi)
+			{
+				V_nmf[i][j] = epsi;
 			}
 		}
 		for (k = 0; k < nfreq; k++)
