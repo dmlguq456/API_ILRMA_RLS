@@ -13,7 +13,7 @@ ILRMA::ILRMA()
 	//epsi = 0.000001;
 	epsi = 2.220446049250313*1E-16;
 	f_alpha = 0.96;
-	f_alpha2 = 0.95;
+	f_alpha2 = 0.3;
 	Nrank = 2;
 	double max = 32767;
 
@@ -580,6 +580,7 @@ void ILRMA::ILRMA_lemma(double **input, int frameInd, double **output)
 			{
 				lambda[i][k] += V_nmf[i][j] * T_nmf[i][j][k];
 			}
+			if (lambda[i][k] < 1e-4) lambda[i][k] = 1e-4;
 			p[i][k] = (1 - f_alpha) / lambda[i][k];
 		}
 	}

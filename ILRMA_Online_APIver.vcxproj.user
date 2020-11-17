@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>./input/testo1.wav ./input/testo2.wav ./input/testo3.wav</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>./input/IN_ch1.wav ./input/IN_ch2.wav ./input/IN_ch3.wav</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>./input/testo1.wav ./input/testo2.wav ./input/testo3.wav</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>./input/input1.wav ./input/input2.wav</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
