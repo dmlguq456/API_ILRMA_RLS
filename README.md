@@ -64,27 +64,22 @@ wav 저장 시에, 입력 및 출력 파일은 각각 input과 output 폴더 내
 - **샘플 입력**
 샘플 입력은 input디렉토리에 포함되어있습니다.
 
-**x_3x3_S1_ch1.wav**
+**input1.wav**
 
-**x_3x3_S1_ch2.wav**
+**input2.wav**
 
-**x_3x3_S1_ch3.wav**
 
 **첫번째 채널에 대한 스펙트로그램**
 
-![./Sample_Spec/IN_spec.png](./Sample_Spec/IN_spec.png)
+![./Sample_Spec/IN_spec.png](./Sample_Spec/IN_Spec.png)
 
 - **샘플 출력**
 샘플 출력은 output디렉토리에 포함되어있습니다.
 
 **IVA_ch1.wav**
 
-![./Sample_Spec/IVA_spec1.png](./Sample_Spec/IVA_spec1.png)
+![./Sample_Spec/IVA_spec1.png](./Sample_Spec/OUT1_Spec.png)
 
 **IVA_ch2.wav**
 
-![./Sample_Spec/IVA_spec2.png](./Sample_Spec/IVA_spec2.png)
-
-**IVA_ch3.wav**
-
-![./Sample_Spec/IVA_spec3.png](./Sample_Spec/IVA_spec3.png)
+![./Sample_Spec/IVA_spec2.png](./Sample_Spec/OUT2_Spec.png)
